@@ -175,7 +175,10 @@ public enum CodeViewerKitStandardLanguages {
         "javascript",
         aliases: ["js", "jsx", "mjs", "cjs"],
         language: tree_sitter_javascript(),
-        query: TreeSitterJavaScriptQueries.Query.highlightsFileURL
+        query: TreeSitterJavaScriptQueries.Query.highlightsFileURL,
+        detectsSource: {
+            $0.contains("console.log(") || $0.contains("=>")
+        }
     )
 
     public static let jsDoc = grammar(
@@ -187,7 +190,16 @@ public enum CodeViewerKitStandardLanguages {
     public static let json = grammar(
         "json",
         language: tree_sitter_json(),
-        query: TreeSitterJSONQueries.Query.highlightsFileURL
+        query: TreeSitterJSONQueries.Query.highlightsFileURL,
+        detectsSource: { source in
+            let trimmed = source.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmed.hasPrefix("{") || trimmed.hasPrefix("[") else {
+                return false
+            }
+            return (try? JSONSerialization.jsonObject(
+                with: Data(trimmed.utf8)
+            )) != nil
+        }
     )
 
     public static let json5 = grammar(
@@ -254,7 +266,10 @@ public enum CodeViewerKitStandardLanguages {
         "python",
         aliases: ["py", "pyw"],
         language: tree_sitter_python(),
-        query: TreeSitterPythonQueries.Query.highlightsFileURL
+        query: TreeSitterPythonQueries.Query.highlightsFileURL,
+        detectsSource: {
+            $0.contains("def ") || $0.lowercased().contains("python")
+        }
     )
 
     public static let r = grammar(
@@ -305,7 +320,10 @@ public enum CodeViewerKitStandardLanguages {
     public static let swift = grammar(
         "swift",
         language: tree_sitter_swift(),
-        query: TreeSitterSwiftQueries.Query.highlightsFileURL
+        query: TreeSitterSwiftQueries.Query.highlightsFileURL,
+        detectsSource: {
+            $0.contains("import SwiftUI") || $0.contains("import Foundation")
+        }
     )
 
     public static let toml = grammar(
@@ -331,7 +349,12 @@ public enum CodeViewerKitStandardLanguages {
         queryURLs: [
             TreeSitterJavaScriptQueries.Query.highlightsFileURL,
             TreeSitterTypeScriptQueries.Query.highlightsFileURL
-        ]
+        ],
+        detectsSource: {
+            $0.contains("interface ")
+                || $0.contains(": string")
+                || $0.contains(": number")
+        }
     )
 
     public static let yaml = grammar(
@@ -353,13 +376,15 @@ public enum CodeViewerKitStandardLanguages {
         _ identifier: String,
         aliases: [String] = [],
         language: OpaquePointer,
-        query: URL
+        query: URL,
+        detectsSource: (@Sendable (String) -> Bool)? = nil
     ) -> CodeGrammar {
         CodeGrammar(
             identifier: identifier,
             aliases: aliases,
             language: language,
-            queryURLs: [query]
+            queryURLs: [query],
+            detectsSource: detectsSource
         )
     }
 }
