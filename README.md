@@ -33,6 +33,13 @@ Haskell, HTML, Java, JavaScript, JSDoc, JSON, JSON5, Julia, LaTeX, Lua,
 Markdown, Markdown Inline, OCaml, Perl, PHP, Python, R, Regex, Ruby, Rust,
 SCSS, SQL, Svelte, Swift, TOML, TSX, TypeScript, and YAML.
 
+## Multiplatform Xcode app
+
+For a complete example that starts from Apple's **Multiplatform > App**
+template, see [Examples/MultiplatformXcodeApp](Examples/MultiplatformXcodeApp).
+It shows the package-product selection and the exact generated files to
+replace in an iOS, iPadOS, and macOS target.
+
 ## Size and updates
 
 Using `all` intentionally links every native parser and its query resources.
