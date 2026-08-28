@@ -5,6 +5,15 @@ import Testing
 @Test
 @MainActor
 func completeCatalogCanCreateAHighlightStore() {
-    #expect(CodeViewerKitStandardLanguages.all.count == 38)
-    _ = CodeHighlightStore(grammars: CodeViewerKitStandardLanguages.all)
+    let grammars = CodeViewerKitStandardLanguages.all
+    let identifiers = grammars.map(\.identifier)
+
+    #expect(grammars.count == 38)
+    #expect(Set(identifiers).count == grammars.count)
+    #expect(identifiers.contains("swift"))
+    #expect(
+        grammars.first { $0.identifier == "typescript" }?.aliases
+            .contains("ts") == true
+    )
+    _ = CodeHighlightStore(grammars: grammars)
 }

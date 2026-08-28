@@ -39,7 +39,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/cavs1910/CodeViewerKit.git",
-            from: "0.6.3"
+            from: "0.6.4"
         ),
         .package(
             url: "https://github.com/simonbs/TreeSitterLanguages.git",
